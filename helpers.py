@@ -1,18 +1,75 @@
 import tkinter as tk 
 import constants as c
 
+count = 0
+player_scores = [501, 501]
+current_player = 0
+player_entries = []
+lst_1 = []
+lst_2 = []
+
 def collect(value):
-    print(value)
+    global count, current_player, player_scores
+    players = ["Player 1", "Player 2"]
+    count += 1
+    # if value == "DEL":
+    #     return
+    # elif value == "DOUBLE":
+       
+    #     return value * 2
+    # elif value == "TRPLE":
+    #     return value *3 
+    
+    player_scores[current_player] -= value
+    player_entries[current_player].delete(0, tk.END)
+    player_entries[current_player].insert(0, str(player_scores[current_player]))
+
+    # SMALL ENTRY WIDGETS INSERT SCORE AND UPDATE
+    if current_player == 0:
+        lst_1.append(value)
+        print(lst_1)
+        first_1.insert(0, str(lst_1[0]))
+        lst_1[0] = ""
+        lst_2.clear()
+        second_1.delete(0,tk.END)
+        second_2.delete(0,tk.END)
+        second_3.delete(0,tk.END)
+        first_2.insert(0, str(lst_1[1]))
+        lst_1[1] = ""
+        first_3.insert(0, str(lst_1[2]))
+        lst_1[2] = ""
+    else:
+        lst_2.append(value)
+        second_1.insert(0, str(lst_2[0]))
+        lst_2[0] = ""
+        lst_1.clear()
+        first_1.delete(0,tk.END)
+        first_2.delete(0,tk.END)
+        first_3.delete(0,tk.END)
+        second_2.insert(0, str(lst_2[1]))
+        lst_2[1] = ""
+        second_3.insert(0, str(lst_2[2]))
+        lst_2[2] = ""
+
+    
+    if count % 3 == 0:
+        current_player = 1 - current_player  # Toggle between 0 and 1
+
+    print(f"{players[current_player]}'s turn")
+
+
 
 
 def body():
-
-    global x_axis
+    global x_axis, first_1, player_entries, first_2, first_3
+    global second_1, second_2, second_3
     root = tk.Tk()
     root.geometry("480x700")
     root.title("Darts Counter")
     x_axis = 0
     dx_axis = 0
+
+    #BUTTON LAYOUT
 
     for i in range(9):
         tk.Button(text=i+1, width=7, height=3,command=lambda i=i: collect(i+1)).place(x=x_axis, y=c.my, anchor="w")
@@ -34,10 +91,12 @@ def body():
     first_entry = tk.Entry(width=10,font="Ariel, 25")
     first_entry.place(x=c.mx, y=10)
     first_entry.insert(0, str("501"))
+    player_entries.append(first_entry)
+
 
     first_1 = tk.Entry(width=3, font="Ariel, 25")
     first_1.place(x=c.mx, y=60)
-    
+
     first_2 = tk.Entry(width=3, font="Ariel, 25")
     first_2.place(x=c.mx+65, y=60)
     
@@ -51,6 +110,8 @@ def body():
     second_entry = tk.Entry(width=10,font="Ariel, 25")
     second_entry.place(x=c.mx, y=120)
     second_entry.insert(0, str("501"))
+    player_entries.append(second_entry)
+
 
     second_1 = tk.Entry(width=3, font="Ariel, 25")
     second_1.place(x=c.mx, y=170)
