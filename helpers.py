@@ -1,14 +1,17 @@
 # next commit - add error handling and worked on game logic
+# ADDED TRIPPLE 25 CORNCER CASE
 
 import tkinter as tk 
 import constants as c
 
 count = 0
-player_scores = [501, 501]
+player_scores = [101, 101]
 current_player = 0
 player_entries = []
 lst_1 = []
 lst_2 = []
+checkout_lst_1 = []
+checkout_lst_2 = []
 score_checker_1 = []
 score_checker_2 = []
 double_pressed = False
@@ -18,7 +21,7 @@ tripple_pressed = False
 def collect(value):
     global count, current_player, player_scores, double_pressed, tripple_pressed
     players = ["Player 1", "Player 2"]
-
+    # DOUBLE AND TRIPPLE BUTTON LOGIC
     if value == "DOUBLE":
         double_pressed = True
     else:
@@ -26,26 +29,47 @@ def collect(value):
             value *=2
             count -=1
             double_pressed = False
-    if value == 25:
-        return value
+    
+    if value == "TRIPPLE":
+        tripple_pressed= True
     else:
-        if value == "TRIPPLE":
-            tripple_pressed= True
-        else:
-            if tripple_pressed:
+        if tripple_pressed:
+            if value == 25:
+                tripple_pressed= False
+                count -= 1
+                return 25
+            else:
                 value *=3
                 count -=1
                 tripple_pressed = False
+    #######################################################################################################
     count +=1
-    player_scores[current_player] -= value 
+   
+    player_scores[current_player] -= value
+    checkout_lst_1.append(value)
+    
     player_entries[current_player].delete(0, tk.END)
     player_entries[current_player].insert(0, str(player_scores[current_player]))
+
+    if player_scores[0] < 2:
+        a = (player_scores[0]+checkout_lst_1[-1])
+        player_entries[0].delete(0, tk.END)
+        player_entries[0].insert(0, str(a))
+        count +=1
+        current_player = 1 - current_player  # Toggle between 0 and 1
+    elif player_scores[1] < 2:
+        b = (player_scores[1] + checkout_lst_2[-1])
+        player_entries[1].delete(0, tk.END)
+        player_entries[1].insert(0, str(b))
+    
+    # print(f"{[player_scores]}")
+
 
     # SMALL ENTRY WIDGETS INSERT SCORE AND UPDATE
     if current_player == 0:
         try: 
             lst_1.append(value)
-
+            
             first_1.insert(0, str(lst_1[0]))
             lst_1[0] = ""
             lst_2.clear()
@@ -74,16 +98,16 @@ def collect(value):
             lst_2[2] = ""
         except IndexError:
             pass 
-    
+    ################################################################################################
+
+
     if count % 3 == 0:
         current_player = 1 - current_player  # Toggle between 0 and 1
-
-    # print(f"{players[current_player]}'s turn")
-
 
 def body():
     global x_axis, first_1, player_entries, first_2, first_3
     global second_1, second_2, second_3, first_entry, second_entry
+    global bull
     root = tk.Tk()
     root.geometry("480x700")
     root.title("Darts Counter")
@@ -103,8 +127,9 @@ def body():
         tk.Button(text=j+16, width=7, height=3,command=lambda j=j: collect(j+16)).place(x=dx_axis, y=c.my+(2*(c.y_shift)), anchor="w")
         dx_axis += c.x_shift
 
-    tk.Button(text=25, width=7, height=3,command=lambda j=j: collect(25)).place(x=dx_axis, y=c.my+(2*(c.y_shift)), anchor="w")
+    bull = tk.Button(text=25, width=7, height=3, command=lambda j=j:collect(25)).place(x=dx_axis, y=c.my+(2*(c.y_shift)), anchor="w")
     tk.Button(text="DBLE", width=7, height=3,command=lambda j=j: collect("DOUBLE")).place(x=dx_axis+c.x_shift, y=c.my+(2*(c.y_shift)), anchor="w")
+    tk.Button(text=0, width=7, height=3,command=lambda j=j: collect(0)).place(x=200,y=300, anchor="s")
     tk.Button(text="TRPLE", width=7, height=3,command=lambda j=j: collect("TRIPPLE")).place(x=(dx_axis+c.x_shift)+c.x_shift, y=c.my+(2*(c.y_shift)), anchor="w")
     tk.Button(text="DEL", width=8, height=3,command=lambda j=j: collect("DEL")).place(x=c.mx, y=c.my+(3*(c.y_shift)+2), anchor="center")
     
