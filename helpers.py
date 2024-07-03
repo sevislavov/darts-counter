@@ -1,3 +1,4 @@
+#TODO double out and del button 
 
 import tkinter as tk 
 import constants as c
@@ -13,7 +14,6 @@ score_checker_1 = []
 score_checker_2 = []
 double_pressed = False
 tripple_pressed = False
-
 
 def collect(value):
     global count, current_player, player_scores, double_pressed, tripple_pressed
@@ -39,27 +39,42 @@ def collect(value):
                 value *=3
                 
                 tripple_pressed = False
-    #######################################################################################################
+
+ #######################################################################################################
     
     previous_score = player_scores[current_player]   
     player_scores[current_player] -= value
     current_throws.append(value)
-  
+    first_1.config(fg="black") or first_2.config(fg="black") or first_3.config(fg="black") 
+    second_1.config(fg="black") or second_2.config(fg="black") or second_3.config(fg="black")
+
     if player_scores[current_player] < 0 or player_scores[current_player] == 1:
+        if current_player == 0:
+            if count == 0:
+                first_1.config(fg="red")
+            elif count == 1:
+                first_2.config(fg="red")
+            else:
+                first_3.config(fg="red")
+        else:
+            if count == 0:
+                second_1.config(fg="red")
+            elif count == 1:
+                second_2.config(fg="red")
+            else:
+                second_3.config(fg="red")
+
         player_scores[current_player] = previous_score
         current_throws.pop()
-        # count -= 1
+
         update_entries(current_player, value)
         switch_player(True)
-        # current_player = 1 - current_player 
-        # count += 1
         return
+    
     elif player_scores[current_player] == 0:
         print(f"Player {current_player + 1} wins!")
         reset_game()
         return
-
-        ################################################################################################
     update_entries(current_player, value)
     update_score()
 
@@ -95,11 +110,10 @@ def reset_game():
     second_2.delete(0, tk.END)
     second_3.delete(0, tk.END)
 
-
-
 def update_entries(player, value):
     if player == 0:
         lst_1.append(value)
+        print(f"lst_1: {lst_1}")
         try: 
             
             first_1.insert(0, str(lst_1[0]))
@@ -130,8 +144,6 @@ def update_entries(player, value):
             lst_2[2] = ""
         except IndexError:
             pass
-
-
 
 def body():
     global x_axis, first_1, player_entries, first_2, first_3
