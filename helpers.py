@@ -1,6 +1,7 @@
 #TODO double out
 #TODO del button fix with overthrow
 #TODO del button cant go over limit (101, 501....)
+#TODO del button switches to the other person
 #TODO fix error messages when pressing non int buttons
 
 import tkinter as tk 
@@ -18,9 +19,10 @@ score_checker_1 = []
 score_checker_2 = []
 double_pressed = False
 tripple_pressed = False
+del_counter = 0
 
 def collect(value):
-    global count, current_player, player_scores, double_pressed, tripple_pressed, inside_count
+    global count, current_player, player_scores, double_pressed, tripple_pressed, inside_count, del_counter
     players = ["Player 1", "Player 2"]
     # DOUBLE AND TRIPPLE BUTTON LOGIC
     if value == "DOUBLE":
@@ -42,74 +44,10 @@ def collect(value):
                 tripple_pressed = False
 
     if value == "DEL":
-        if current_player == 0:
-            if count == 0:
-                count = 3
-                current_player = 1
-                second_3.delete(0, tk.END)
-                lst_2.pop(-1)
-                player_scores[1] += current_throws[-1]
-                current_throws.pop(-1)
-                player_entries[1].delete(0, tk.END)     
-                player_entries[1].insert(0, str(player_scores[0]))
-                count -= 1
-            else:
-                player_scores[0] += current_throws[-1]
-                current_throws.pop(-1)
-                player_entries[0].delete(0, tk.END)
-                player_entries[0].insert(0, str(player_scores[0]))
-    
-                if count == 1:
-                    first_1.delete(0, tk.END)
-                    lst_1.pop(-1)
-                    count -= 1
-                elif count == 2:
-                    first_2.delete(0, tk.END)
-                    lst_1.pop(-1)
-                    count -= 1
-                elif count == 3:
-                    first_3.delete(0, tk.END)
-                    lst_1.pop(-1)
-                    count -= 1
-
-        else:
-            if count == 0:
-                count = 3
-                current_player = 0
-                first_3.delete(0, tk.END)
-                lst_1.pop(-1)
-                player_scores[0] += current_throws[-1]
-                current_throws.pop(-1)
-                player_entries[0].delete(0, tk.END)     
-                player_entries[0].insert(0, str(player_scores[0]))
-                count -= 1
-            else:
-                player_scores[1] += current_throws[-1]
-                current_throws.pop(-1)
-                player_entries[1].delete(0, tk.END)
-                player_entries[1].insert(0, str(player_scores[1]))
-
-                if count == 1:
-                    second_1.delete(0, tk.END)
-                    lst_2.pop(-1)
-                    count -= 1
-
-                elif count == 2:
-                    second_2.delete(0, tk.END)
-                    lst_2.pop(-1)
-                    count -= 1
-                else:
-                    second_3.delete(0, tk.END)
-                    lst_2.pop(-1)
-                    count -= 1
-
-#######################################################################################################
-    
+        delete()
+                
     previous_score = player_scores[current_player]   
-    
     player_scores[current_player] -= value
-    print(f"count outside: {count} ")
-
     current_throws.append(value)
     first_1.config(fg="black") or first_2.config(fg="black") or first_3.config(fg="black") 
     second_1.config(fg="black") or second_2.config(fg="black") or second_3.config(fg="black")
@@ -118,15 +56,19 @@ def collect(value):
         if current_player == 0:
             if count == 0:
                 first_1.config(fg="red")
+             
             elif count == 1:
                 first_2.config(fg="red")
+             
             else:
-                first_3.config(fg="red")
+                first_3.config(fg="red") 
         else:
             if count == 0:
                 second_1.config(fg="red")
+         
             elif count == 1:
                 second_2.config(fg="red")
+               
             else:
                 second_3.config(fg="red")
 
@@ -144,12 +86,76 @@ def collect(value):
     update_entries(current_player, value)
     update_score()
 
-   
-
     count +=1
     if count % 3 == 0:
         switch_player(False) 
+    print("outside" + str(count))
 
+def delete():
+    global current_player, count, current_throws, dell
+
+    if current_player == 0:
+        if count == 0:
+            print(count)
+            count = 3
+            current_player = 1
+            second_3.delete(0, tk.END)
+            lst_2.pop(-1)
+            player_scores[1] += current_throws[-1]
+            current_throws.pop(-1)
+            player_entries[1].delete(0, tk.END)     
+            player_entries[1].insert(0, str(player_scores[0]))
+            count -= 1
+        else:
+            player_scores[0] += current_throws[-1]
+            current_throws.pop(-1)
+            player_entries[0].delete(0, tk.END)
+            player_entries[0].insert(0, str(player_scores[0]))
+
+            if count == 1:
+                first_1.delete(0, tk.END)
+                lst_1.pop(-1)
+                count -= 1
+            elif count == 2:
+                first_2.delete(0, tk.END)
+                lst_1.pop(-1)
+                count -= 1
+            elif count == 3:
+                first_3.delete(0, tk.END)
+                lst_1.pop(-1)
+                count -= 1
+
+    else:
+        if count == 0 and current_player == 1:
+            count = 3
+            current_player = 0
+            first_3.delete(0, tk.END)
+            lst_1.pop(-1)
+            player_scores[0] += current_throws[-1]
+            current_throws.pop(-1)
+            player_entries[0].delete(0, tk.END)     
+            player_entries[0].insert(0, str(player_scores[0]))
+            count -= 1
+        else:
+            player_scores[1] += current_throws[-1]
+            current_throws.pop(-1)
+            player_entries[1].delete(0, tk.END)
+            player_entries[1].insert(0, str(player_scores[1]))
+
+            if count == 1:
+                second_1.delete(0, tk.END)
+                lst_2.pop(-1)
+                count -= 1
+
+            elif count == 2:
+                second_2.delete(0, tk.END)
+                lst_2.pop(-1)
+                count -= 1
+            else:
+                second_3.delete(0, tk.END)
+                lst_2.pop(-1)
+                count -= 1
+                
 def switch_player(after_throw):
     global current_player, count
     current_player = 1 - current_player  # Toggle between 0 and 1
@@ -216,7 +222,7 @@ def update_entries(player, value):
 def body():
     global x_axis, first_1, player_entries, first_2, first_3
     global second_1, second_2, second_3, first_entry, second_entry
-    global bull
+    global bull, dell
     root = tk.Tk()
     root.geometry("480x700")
     root.title("Darts Counter")
@@ -241,8 +247,8 @@ def body():
     tk.Button(text=0, width=7, height=3,command=lambda j=j: collect(0)).place(x=c.mx-60, y=(c.my+(3*(c.y_shift)))-25)
     tk.Button(text="TRPLE", width=7, height=3,command=lambda j=j: collect("TRIPPLE")).place(x=(dx_axis+c.x_shift)+c.x_shift, y=c.my+(2*(c.y_shift)), anchor="w")
 
-    tk.Button(text="DEL", width=7, height=3,command=lambda j=j: collect("DEL")).place(x=c.mx+30, y=c.my+(3*(c.y_shift)+2), anchor="center")
-    
+    dell = tk.Button(text="DEL", width=7, height=3, command=lambda j=j: collect("DEL")).place(x=c.mx+30, y=c.my+(3*(c.y_shift)+2), anchor="center")
+
     # PLAYER 1 LAYOUT
     tk.Label(text="Player 1", font="Ariel, 25").place(x=10, y=10)
 
