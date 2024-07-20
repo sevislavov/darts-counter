@@ -22,9 +22,14 @@ tripple_pressed = False
 delete_pressed = False
 del_counter = 0
 
+straight_or_double = int(input("For straight out press 0 for double out press 1> "))
+last_throw_was_double = False
+
 def collect(value):
     global count, current_player, player_scores, double_pressed, tripple_pressed, inside_count, del_counter
+    global last_throw_was_double
     players = ["Player 1", "Player 2"]
+    last_throw_was_double = False
     # DOUBLE AND TRIPPLE BUTTON LOGIC
     if value == "DOUBLE":
         double_pressed = True
@@ -32,7 +37,8 @@ def collect(value):
         if double_pressed:
             value *=2
             double_pressed = False
-    
+            last_throw_was_double = True
+
     if value == "TRIPPLE":
         tripple_pressed= True
     else:
@@ -46,10 +52,10 @@ def collect(value):
 
     if value == "DEL":
         delete()
-    #d asd  as d as daslkd,;masd,as;d,a;sd,;asd,a;sld, a;s, d;as,d ;as 
     previous_score = player_scores[current_player]   
     player_scores[current_player] -= value
     current_throws.append(value)
+
     first_1.config(fg="#5bffd3") or first_2.config(fg="#5bffd3") or first_3.config(fg="#5bffd3") 
     second_1.config(fg="#5bffd3") or second_2.config(fg="#5bffd3") or second_3.config(fg="#5bffd3")
 
@@ -80,9 +86,21 @@ def collect(value):
         switch_player(True)
         return
     
-    elif player_scores[current_player] == 0:
+    elif player_scores[current_player] == 0 and straight_or_double == 0:
         print(f"Player {current_player + 1} wins!")
         reset_game()
+        return
+    
+    elif player_scores[current_player] == 0 and straight_or_double == 1 and last_throw_was_double:
+        print(f"Player {current_player + 1} wins with a double out!")
+        reset_game()
+        return
+    elif player_scores[current_player] == 0 and not last_throw_was_double:
+        # If player hits zero without a double, revert the score
+        player_scores[current_player] = previous_score
+        current_throws.pop()
+        update_entries(current_player, value)
+        switch_player(True)
         return
     
     update_entries(current_player, value)
@@ -101,7 +119,7 @@ def delete():
             current_player = 1
             print(count)
             count = 3
-
+         
             current_player = 1
             second_3.delete(0, tk.END)
             lst_2.pop(-1)
@@ -128,7 +146,7 @@ def delete():
                 first_3.delete(0, tk.END)
                 lst_1.pop(-1)
                 count -= 1
-
+        
     else:
         if count == 0:
             count = 3
