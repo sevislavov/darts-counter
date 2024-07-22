@@ -1,15 +1,14 @@
-#TODO double out
-#TODO del button fix with overthrow
-#TODO del button cant go over limit (101, 501....)
-#TODO del button switches to the other person
-#TODO fix error messages when pressing non int buttons
-
 import tkinter as tk 
 import constants as c
 
+starting_score = int(input("Please enter the amount of points you would like to start on>  "))
+straight_or_double = int(input("For straight out press 0 for double out press 1> "))
+player_one = str(input("Please enter your name Player 1> "))
+player_two = str(input("Please enter your name Player 2> "))
+
 count = 0
 inside_count = 0
-player_scores = [101, 101]
+player_scores = [starting_score, starting_score]
 current_player = 0
 player_entries = []
 lst_1 = []
@@ -21,16 +20,15 @@ double_pressed = False
 tripple_pressed = False
 delete_pressed = False
 del_counter = 0
-
-straight_or_double = int(input("For straight out press 0 for double out press 1> "))
 last_throw_was_double = False
 
 def collect(value):
     global count, current_player, player_scores, double_pressed, tripple_pressed, inside_count, del_counter
     global last_throw_was_double
-    players = ["Player 1", "Player 2"]
     last_throw_was_double = False
+
     # DOUBLE AND TRIPPLE BUTTON LOGIC
+
     if value == "DOUBLE":
         double_pressed = True
     else:
@@ -52,12 +50,15 @@ def collect(value):
 
     if value == "DEL":
         delete()
+
     previous_score = player_scores[current_player]   
     player_scores[current_player] -= value
     current_throws.append(value)
 
     first_1.config(fg="#5bffd3") or first_2.config(fg="#5bffd3") or first_3.config(fg="#5bffd3") 
     second_1.config(fg="#5bffd3") or second_2.config(fg="#5bffd3") or second_3.config(fg="#5bffd3")
+
+    #CHANGE THE COLOR OF THE TURN WHEN AN OVERTHROW HAPPENS
 
     if player_scores[current_player] < 0 or player_scores[current_player] == 1:
         if current_player == 0:
@@ -112,6 +113,7 @@ def collect(value):
     print("outside" + str(count))
 
 def delete():
+    # DELETE LAST TURN
     global current_player, count, current_throws, dell, delete_pressed
     delete_pressed = True
     if current_player == 0:
@@ -184,12 +186,14 @@ def switch_player(after_throw):
     count = 0
 
 def update_score():
+    # Update big entry widgets 
     player_entries[current_player].delete(0, tk.END)
     player_entries[current_player].insert(0, str(player_scores[current_player]))
 
 def reset_game():
+    # Reset game after a leg is won
     global player_scores, lst_1, lst_2, current_throws, current_player, count
-    player_scores = [101, 101]
+    player_scores = [starting_score, starting_score]
     lst_1.clear()
     lst_2.clear()
     current_throws.clear()
@@ -197,8 +201,8 @@ def reset_game():
     count = 0
     first_entry.delete(0, tk.END)
     second_entry.delete(0, tk.END)
-    first_entry.insert(0, str(101))
-    second_entry.insert(0, str(101))
+    first_entry.insert(0, str(starting_score))
+    second_entry.insert(0, str(starting_score))
     first_1.delete(0, tk.END)
     first_2.delete(0, tk.END)
     first_3.delete(0, tk.END)
@@ -207,11 +211,11 @@ def reset_game():
     second_3.delete(0, tk.END)
 
 def update_entries(player, value):
+    # Update smaller entry box widgets
     if player == 0:
         lst_1.append(value)
         print(f"lst_1: {lst_1}")
-        try: 
-            
+        try:  
             first_1.insert(0, str(lst_1[0]))
             lst_1[0] = ""
             lst_2.clear()
@@ -242,6 +246,7 @@ def update_entries(player, value):
             pass
 
 def body():
+    # GUI and design
     global x_axis, first_1, player_entries, first_2, first_3
     global second_1, second_2, second_3, first_entry, second_entry
     global bull, dell
@@ -251,14 +256,7 @@ def body():
     x_axis = 0
     dx_axis = 0
 
-    # my_frame = tk.Frame(root, bg="blue", pady=40)
-    # my_frame.pack(fill=tk.BOTH, expand=True)
-    # my_frame.columnconfigure(0, weight=1)
-    # my_frame.rowconfigure(0, weight=1)
-    # my_frame.rowconfigure(1, weight=1)
-   
     bg = tk.PhotoImage(file="assets/other/background.png")
-
     one_png = tk.PhotoImage(file="assets/nums/one.png")
     two_png = tk.PhotoImage(file="assets/nums/two.png")
     three_png = tk.PhotoImage(file="assets/nums/three.png")
@@ -329,11 +327,11 @@ def body():
 
     # PLAYER 1 LAYOUT
     
-    tk.Label(text="Player 1", font="Ariel, 25", bg="#1c2143", fg="#5bffd3").place(x=10, y=10)
+    tk.Label(text=player_one, font="Ariel, 25", bg="#1c2143", fg="#5bffd3").place(x=10, y=10)
 
     first_entry = tk.Entry(width=10,font="Ariel, 25", bg="#1c2143", bd=3, fg="#5bffd3")
     first_entry.place(x=c.mx, y=10)
-    first_entry.insert(0, str("501"))
+    first_entry.insert(0, str(starting_score))
     player_entries.append(first_entry)
 
 
@@ -348,11 +346,11 @@ def body():
 
     # PLAYER 2 LAYOUT
 
-    tk.Label(text="Player 2", font="Ariel, 25", bg="#1c2143", fg="#5bffd3").place(x=10, y=120)
+    tk.Label(text=player_two, font="Ariel, 25", bg="#1c2143", fg="#5bffd3").place(x=10, y=120)
 
     second_entry = tk.Entry(width=10,font="Ariel, 25", bg="#1c2143", fg="#5bffd3")
     second_entry.place(x=c.mx, y=120)
-    second_entry.insert(0, str("501"))
+    second_entry.insert(0, str(starting_score))
     player_entries.append(second_entry)
 
 
