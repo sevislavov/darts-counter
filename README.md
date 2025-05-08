@@ -21,5 +21,3 @@ Built as a learning project to practice GUI development and basic game logic.
 2. Run the app
    ```bash
    python main.py
-
-
